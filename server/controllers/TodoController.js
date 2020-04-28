@@ -24,7 +24,7 @@ class TodoController {
         const { title, description } = req.body
         try {
             const newTodo = await Todo.create({ title, description, userId: req.userData.id })
-            res.status(201).json('successfully created new todo')
+            res.status(201).json({newTodo, message:'Added new Todo'})
         } catch (err) {
             next(err)
         }

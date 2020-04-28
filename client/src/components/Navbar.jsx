@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { userLogout } from '../slices/userSlice'
 import { useHistory } from 'react-router-dom'
 
-export default function Navbar() {
+export default function Navbar(props) {
     const dispatch = useDispatch()
     const history = useHistory()
     const user = useSelector(state => state.user)
@@ -17,7 +17,7 @@ export default function Navbar() {
     return (
         <ul className="nav bg-dark text-white fixed-top">
             <li className="nav-item p-3 mr-auto">
-                <button className="btn btn-light" style={styles.btnText}>Add new Todo</button>
+                <button className="btn btn-light" style={styles.btnText} onClick={() => props.handleShow(true)}>Add new Todo</button>
             </li>
             <li className="nav-item mx-auto">
                 <h3 style={styles.middle}>Todo Application</h3>
