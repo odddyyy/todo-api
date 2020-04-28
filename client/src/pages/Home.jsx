@@ -5,36 +5,38 @@ import { userLogin } from '../slices/userSlice'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
+//components import
+import Login from '../components/Login'
+import Register from '../components/Register'
+
+
 const SERVER = 'http://localhost:3001'
 
 export default function Home() {
     const dispatch = useDispatch()
     const history = useHistory()
-    //login state
-    const [emailLog, setEmailLog] = useState('')
-    const [passwordLog, setPasswordLog] = useState('')
-
-    //register state
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
     
-    //login form submission
-    const login = async (e) => {
-        e.preventDefault()
+    //local state
+    const [regis, setRegis] = useState(false)
+
+    //login function
+    const login = async (email, password) => {
         try {
             const { data } = await axios({
                 method: 'POST',
                 url: `${SERVER}/login`,
                 data: {
-                    email: emailLog,
-                    password: passwordLog
+                    email,
+                    password
                 }
             })
             dispatch(userLogin(data))
             Swal.fire({
+                position:'top-end',
                 icon:'success',
-                text:'Login successfull'
+                text:'Login successfull',
+                showConfirmButton: false,
+                timer: 1500
             })
             history.push('/todo')
         } catch (err) {
@@ -45,9 +47,8 @@ export default function Home() {
         }
     }
 
-    //register form submission
-    const register = async (e) => {
-        e.preventDefault()
+    // register function
+    const register = async (username, email, password) => {
         try {
             const { data } = await axios({
                 method: 'POST',
@@ -59,6 +60,13 @@ export default function Home() {
                 }
             })
             dispatch(userLogin(data))
+            Swal.fire({
+                icon:'success',
+                text:`Thank you for registering ${username}`,
+                showConfirmButton: false,
+                timer: 1500
+            })
+            history.push('/todo')
         } catch (err) {
             Swal.fire({
                 icon:'warning',
@@ -70,39 +78,10 @@ export default function Home() {
     return (
         <div style={styles.main}>
             <div className="container">
-                <div className="row" style={{paddingTop:'35vh', opacity:'80%'}}>
-                    <div className="col-6 bg-dark text-white rounded">
-                        <h5 className="mt-3">Login</h5>
-                        <form className="text-left" style={{padding:'1em'}} onSubmit={e => login(e)}>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Email address</label>
-                                <input type="email" class="form-control" placeholder="Enter email" required onChange={(e) => setEmailLog(e.target.value)} />
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputPassword1">Password</label>
-                                <input type="password" class="form-control" placeholder="Password" required onChange={(e) => setPasswordLog(e.target.value)} />
-                            </div>
-                            <button type="submit" class="btn btn-primary" style={{marginTop:'13vh'}}>Submit</button>
-                        </form>
-                    </div>
-                    <div className="col-6 bg-danger text-white rounded">
-                        <h5 className="mt-3">Register</h5>
-                        <form className="text-left" style={{padding:'1em'}} onSubmit={e => register(e)}>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Username</label>
-                                <input type="text" class="form-control" placeholder="Enter username" onChange={e => setUsername(e.target.value)} />
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Email address</label>
-                                <input type="email" class="form-control" placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputPassword1">Password</label>
-                                <input type="password" class="form-control" placeholder="Password" onChange={e => setPassword(e.target.value)}/>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
+                <div className="row" style={{paddingTop:'32vh', marginLeft:'6em'}}>
+                    {!regis ? 
+                        <Login handleLogin={login} toogleRegis={() => setRegis(true)}/> : 
+                        <Register handleRegister={register} toogleRegis={() => setRegis(false)}/>}   
                 </div>
             </div>
         </div>
@@ -119,7 +98,7 @@ const styles = {
         textShadow: '1px 1px 30px red'
     },
     main: {
-        backgroundImage: 'url("https://media.istockphoto.com/photos/business-plan-todo-list-or-reminder-concept-female-hand-holding-black-picture-id1021975288?k=6&m=1021975288&s=612x612&w=0&h=YSkXxPDIW03bDsreuOBTWvXMiihWv6-Icrs03dEgwI4=")',
+        backgroundImage: 'url("https://forum.layerbb.com/uploads/screenshots/b38df1a-o-TODO-LIST-facebook.jpg")',
         width:'100%',
         height:'100vh',
         backgroundRepeat: 'no-repeat',

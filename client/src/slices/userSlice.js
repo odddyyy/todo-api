@@ -13,9 +13,14 @@ export const userSlice = createSlice({
             state.username = username
             state.loggedIn = true
         },
+        userLogout: (state, action) => {
+            localStorage.removeItem('token')
+            state.username = null
+            state.loggedIn = false
+        }
     }
 })
 
-export const { userLogin } = userSlice.actions
+export const { userLogin, userLogout } = userSlice.actions
 
 export default userSlice.reducer
